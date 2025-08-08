@@ -1,0 +1,28 @@
+freetrm.com {
+  tls skippy@skippy.net
+  import skip-favicon-log
+  import no-server-header
+  root * /var/www/freetrm.com
+  file_server
+  encode gzip
+  log {
+    output file /var/log/caddy/freetrm.log {
+      roll_size 10
+      roll_keep 5
+    }
+  }
+  respond /api/setup* `{"status":200,"api_key":"FREETRM2025v1","friendly_id":"FRETRM","image_url":"https://","filename":"empty_state"}`
+  respond /api/display* 200 {
+    body {"status":0,"image_url":"https://freetrm.nyc3.digitaloceanspaces.com/image.bmp","filename":"FREETRM-2025-08-08T00:00:00","update_firmware":false,"firmware_url":"https://freetrm.com/no-firmware","refresh_rate":3600,"reset_firmware":false}
+  }
+  handle /api/log* {
+    log_append req_body {http.request.body}
+    respond `{"status":0}`
+  }
+  handle_errors {
+    respond "{err.status_code} Error"
+  }
+}
+www.freetrm.com {
+  redir https://freetrm.com/
+}

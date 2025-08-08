@@ -10,7 +10,8 @@ while IFS= read -r line; do
   magick -background white -fill black -size 775x75 -gravity north caption:"${DATES}\n${LABEL}" two.png;
   magick one.png two.png -append header.png
   magick -gravity south -fill black -size 775x260 caption:"${DEETS}" footer.png;
-  magick convert bg.png header.png -gravity north -composite footer.png -gravity south -composite person-${NUM}.png
-  rm one.png two.png header.png footer.png
+  magick convert bg.png header.png -gravity north -composite footer.png -gravity south -composite output.png
+  magick output.png -monochrome -colors 2 -depth 1 -strip bmp3:person-${NUM}.bmp
+  rm one.png two.png header.png footer.png output.png
   ((COUNT+=1));
 done < inventors.txt
